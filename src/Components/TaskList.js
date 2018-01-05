@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Task from './Task';
 import InputTask from './InputTask';
+import InputSearch from "./InputSearch";
 
 let TASKS = [
     {
@@ -16,6 +17,7 @@ export default class TaskList extends Component {
 
     constructor(props) {
         super(props);
+        // this.deleteTask = this.deleteTask.bind(this);
         this.state = {
             displayedTasks: TASKS
         };
@@ -31,17 +33,34 @@ export default class TaskList extends Component {
         });
     }
 
+    deleteTask = (taskName) => {
+        this.setState({
+            displayedTasks: this.state.displayedTasks.filter((task) => task.taskName !== taskName)
+        });
+    }
+
+    search(searchValue) {
+        console.log(searchValue);
+        if (searchValue !== '') {
+            this.setState({
+                displayedTasks: this.state.displayedTasks.filter((task) => task.taskName === searchValue)
+            });
+        }
+    }
+
     render() {
         return (
             <div>
+                <InputSearch search = {this.search.bind(this)}/>
                 <InputTask addTask = {this.addNewTask.bind(this)} />
                 <div>
                     <div className="list-group">
                         {
-                            this.state.displayedTasks.map(function(el, index) {
+                            this.state.displayedTasks.map((el, index) => {
                                 return <Task
                                     key={index}
                                     taskName={el.taskName}
+                                    deleteTask={this.deleteTask}
                                 />;
                             })
                         }

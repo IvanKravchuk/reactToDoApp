@@ -39,13 +39,21 @@ export default class TaskList extends Component {
         });
     }
 
-    search(searchValue) {
-        console.log(searchValue);
-        if (searchValue !== '') {
-            this.setState({
-                displayedTasks: this.state.displayedTasks.filter((task) => task.taskName === searchValue)
-            });
-        }
+    search(searchString) {
+        console.log(searchString);
+        let searchQuery = searchString.toLowerCase();
+        let displayedTasks = TASKS.filter((el) => {
+            let searchValue = el.taskName.toLowerCase();
+            return searchValue.indexOf(searchQuery) !== -1;
+        });
+        this.setState({
+            displayedTasks: displayedTasks
+        });
+    }
+    saveNewTaskName(index, newTaskName){
+        let displayedNewTasks = this.state.displayedTasks;
+        displayedNewTasks[index].taskName = newTaskName;
+        this.setState(Object.assign({}, {displayedTasks: displayedNewTasks}));
     }
 
     render() {
@@ -59,8 +67,10 @@ export default class TaskList extends Component {
                             this.state.displayedTasks.map((el, index) => {
                                 return <Task
                                     key={index}
+                                    index={index}
                                     taskName={el.taskName}
                                     deleteTask={this.deleteTask}
+                                    saveNewTaskName={this.saveNewTaskName.bind(this)}
                                 />;
                             })
                         }

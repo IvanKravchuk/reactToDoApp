@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Task from './Task';
 import InputTask from './InputTask';
 import InputSearch from "./InputSearch";
+import { withAlert } from 'react-alert'
 
 let TASKS = [
     {
@@ -13,11 +14,10 @@ let TASKS = [
     }
 ];
 
-export default class TaskList extends Component {
+class TaskList extends Component {
 
     constructor(props) {
         super(props);
-        // this.deleteTask = this.deleteTask.bind(this);
         this.state = {
             displayedTasks: TASKS
         };
@@ -26,11 +26,14 @@ export default class TaskList extends Component {
     addNewTask(newTask) {
         let tasks = this.state.displayedTasks;
         let task = { taskName: newTask };
-        tasks.push(task);
-
-        this.setState({
-            displayedTasks: tasks
-        });
+        if (tasks.filter((task) => task.taskName === newTask).length > 0){
+            this.props.alert.error('This task already exists');
+        } else {
+            tasks.push(task);
+            this.setState({
+                displayedTasks: tasks
+            });
+        }
     }
 
     deleteTask = (taskName) => {
@@ -40,7 +43,6 @@ export default class TaskList extends Component {
     }
 
     search(searchString) {
-        console.log(searchString);
         let searchQuery = searchString.toLowerCase();
         let displayedTasks = TASKS.filter((el) => {
             let searchValue = el.taskName.toLowerCase();
@@ -81,3 +83,5 @@ export default class TaskList extends Component {
     }
 
 }
+
+export default withAlert(TaskList)

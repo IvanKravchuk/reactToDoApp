@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { withAlert } from 'react-alert'
 
-export default class InputTask extends Component {
+class InputTask extends Component {
 
     constructor(props) {
         super(props);
@@ -16,10 +17,14 @@ export default class InputTask extends Component {
     }
 
     handleClick() {
-        this.props.addTask(this.state.value);
-        this.setState({
-            value: ''
-        });
+        if (this.state.value.length < 4){
+            this.props.alert.error('Task must be longer than 3 characters')
+        } else {
+            this.props.addTask(this.state.value);
+            this.setState({
+                value: ''
+            });
+        }
     }
 
     render() {
@@ -45,3 +50,5 @@ export default class InputTask extends Component {
         );
     }
 }
+
+export default withAlert(InputTask)

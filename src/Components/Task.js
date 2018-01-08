@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 
+let inputStyle = {
+    width: "250 px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+};
+
 export default class Task extends Component {
 
     constructor(props) {
@@ -44,7 +51,7 @@ export default class Task extends Component {
             <div className="list-group-item list-group-item-action">
                     { !this.state.isEtidable &&
                         <div className="row">
-                            <div className="col-8">
+                            <div className="col-8" style={inputStyle}>
                                 {this.props.taskName}
                             </div>
                             <div className="row">

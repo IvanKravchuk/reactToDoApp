@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Task from './Task';
 import InputTask from './InputTask';
 import InputSearch from "./InputSearch";
-import { withAlert } from 'react-alert'
+// import { withAlert } from 'react-alert'
+// import InputValidateMessage from "./InputValidateMessage";
 
 let TASKS = [
     {
@@ -14,12 +15,13 @@ let TASKS = [
     }
 ];
 
-class TaskList extends Component {
+export default class TaskList extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            displayedTasks: TASKS
+            displayedTasks: TASKS,
+            isExist: false
         };
     }
 
@@ -27,7 +29,10 @@ class TaskList extends Component {
         let tasks = this.state.displayedTasks;
         let task = { taskName: newTask };
         if (tasks.filter((task) => task.taskName === newTask).length > 0){
-            this.props.alert.error('This task already exists');
+            // this.props.alert.error('This task already exists');
+            this.setState({
+                isExist: true
+            });
         } else {
             tasks.push(task);
             this.setState({
@@ -57,12 +62,24 @@ class TaskList extends Component {
         displayedNewTasks[index].taskName = newTaskName;
         this.setState(Object.assign({}, {displayedTasks: displayedNewTasks}));
     }
+    closeAlertMessage(){
+        this.setState({
+            isExist: false
+        });
+    }
 
     render() {
         return (
             <div>
                 <InputSearch search = {this.search.bind(this)}/>
-                <InputTask addTask = {this.addNewTask.bind(this)} />
+                <InputTask
+                    addTask = {this.addNewTask.bind(this)}
+                    isExist = {this.state.isExist}
+                    isExistMessage = 'This task already exists'
+                    closeAlert = {this.closeAlertMessage.bind(this)}
+
+                />
+
                 <div>
                     <div className="list-group">
                         {
@@ -84,4 +101,4 @@ class TaskList extends Component {
 
 }
 
-export default withAlert(TaskList)
+// export default withAlert(TaskList)

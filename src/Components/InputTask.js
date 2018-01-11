@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { withAlert } from 'react-alert'
+// import { withAlert } from 'react-alert'
+import InputValidateMessage from "./InputValidateMessage";
 
-class InputTask extends Component {
+var message;
+
+export default class InputTask extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            value: ''
+            value: '',
+            isValidate: true
         };
     }
 
@@ -18,17 +22,30 @@ class InputTask extends Component {
 
     handleClick() {
         if (this.state.value.length < 4){
-            this.props.alert.error('Task must be longer than 3 characters')
+            // this.props.alert.error('Task must be longer than 3 characters')
+            message = 'Task must be longer than 3 characters';
+            this.setState({
+                isValidate: false
+            });
         } else {
             this.props.addTask(this.state.value);
             this.setState({
-                value: ''
+                value: '',
+                isValidate: true
             });
         }
     }
 
+    closeAlertMessage(){
+        this.props.closeAlert();
+        this.setState({
+            isValidate: true
+        });
+    }
+
+
     render() {
-        return (
+        return <div>
             <div className="input-group mb-3">
                 <div className="input-group-prepend">
                     <button
@@ -43,12 +60,14 @@ class InputTask extends Component {
                     placeholder="Add new Task"
                     type="text"
                     value={this.state.value}
-                    onChange={(e)=>this.handleChange(e.target.value)}
+                    onChange={(e) => this.handleChange(e.target.value)}
                 />
-
             </div>
-        );
+            {
+                (!this.state.isValidate || this.props.isExist) && <InputValidateMessage isClosed={this.closeAlertMessage.bind(this)} message={message}/>
+            }
+        </div>;
     }
 }
 
-export default withAlert(InputTask)
+// export default withAlert(InputTask)

@@ -2,37 +2,28 @@ import React, { Component } from 'react';
 import Task from './Task';
 import InputTask from './InputTask';
 import InputSearch from "./InputSearch";
-// import { withAlert } from 'react-alert'
-// import InputValidateMessage from "./InputValidateMessage";
 
-let TASKS = [
-    {
-        taskName: 'task 1'
-    }, {
-        taskName: 'task 2'
-    }, {
-        taskName: 'task 3'
-    }
-];
 
-export default class TaskList extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            displayedTasks: TASKS,
-            // isExist: false
+class TaskList extends Component {
+
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         displayedTasks: TASKS,
+    //         // isExist: false
+    //     };
+    // }
+
+    addNewTask = (newTask) => {
+        let tasks = this.props.list;
+        console.log(tasks[tasks.length - 1].id + 1);
+        let task = {
+            id: tasks[tasks.length - 1].id + 1,
+            status: false,
+            taskName: newTask
         };
-    }
-
-    addNewTask(newTask) {
-        let tasks = this.state.displayedTasks;
-        let task = { taskName: newTask };
         if (tasks.filter((task) => task.taskName === newTask).length > 0){
-            // this.props.alert.error('This task already exists');
-            // this.setState({
-            //     isExist: true
-            // });
         } else {
             tasks.push(task);
             this.setState({
@@ -43,13 +34,13 @@ export default class TaskList extends Component {
 
     deleteTask = (taskName) => {
         this.setState({
-            displayedTasks: this.state.displayedTasks.filter((task) => task.taskName !== taskName)
+            displayedTasks: this.this.props.list.filter((task) => task.taskName !== taskName)
         });
     }
 
-    search(searchString) {
+    search = (searchString) => {
         let searchQuery = searchString.toLowerCase();
-        let displayedTasks = TASKS.filter((el) => {
+        let displayedTasks = this.props.list.filter((el) => {
             let searchValue = el.taskName.toLowerCase();
             return searchValue.indexOf(searchQuery) !== -1;
         });
@@ -57,36 +48,32 @@ export default class TaskList extends Component {
             displayedTasks: displayedTasks
         });
     }
-    saveNewTaskName(index, newTaskName){
-        let displayedNewTasks = this.state.displayedTasks;
+
+    saveNewTaskName = (index, newTaskName) => {
+        let displayedNewTasks = this.props.list;
         displayedNewTasks[index].taskName = newTaskName;
         this.setState(Object.assign({}, {displayedTasks: displayedNewTasks}));
     }
-    // closeAlertMessage(){
-    //     this.setState({
-    //         isExist: false
-    //     });
-    // }
 
     render() {
         return (
             <div>
-                <InputSearch search = {this.search.bind(this)}/>
+                <InputSearch search = {this.search}/>
                 <InputTask
-                    addTask = {this.addNewTask.bind(this)}
-                    list = {this.state.displayedTasks}
+                    addTask = {this.addNewTask}
+                    list = {this.props.list}
                 />
 
                 <div>
                     <div className="list-group">
                         {
-                            this.state.displayedTasks.map((el, index) => {
+                            this.props.list.map((el, index) => {
                                 return <Task
-                                    key={index}
+                                    key={el.id}
                                     index={index}
                                     taskName={el.taskName}
                                     deleteTask={this.deleteTask}
-                                    saveNewTaskName={this.saveNewTaskName.bind(this)}
+                                    saveNewTaskName={this.saveNewTaskName}
                                 />;
                             })
                         }
@@ -98,4 +85,4 @@ export default class TaskList extends Component {
 
 }
 
-// export default withAlert(TaskList)
+export default TaskList;

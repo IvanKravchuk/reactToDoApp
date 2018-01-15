@@ -3,15 +3,15 @@ import React, { Component } from 'react';
 
 export default class AlertMessage extends Component {
 
-    clickHandler(){
-        this.props.isClosed();
-    }
+    // changeHandler = () => {
+    //     this.props.isClosed();
+    // }
 
     render() {
         return (
-            <button onClick={this.clickHandler.bind(this)}>
+            <div>
                 {this.props.message}
-            </button>
+            </div>
         );
     }
 }

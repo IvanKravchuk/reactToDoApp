@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import './App.css';
 
 // let inputStyle = {
 //     width: "250 px",
@@ -8,7 +7,7 @@ import React, { Component } from 'react';
 //     textOverflow: "ellipsis"
 // };
 
-export default class Task extends Component {
+class Task extends Component {
 
     constructor(props) {
         super(props);
@@ -18,81 +17,99 @@ export default class Task extends Component {
         };
     }
 
-    handleClickForDelete(){
+    handleClickForDelete = () => {
         this.props.deleteTask(this.props.taskName);
     }
 
-    handleClickForEdit(){
+    handleClickForEdit = () => {
         this.setState({
             isEtidable: true
         });
     }
 
-    handleClickForCancel(){
+    handleClickForCancel = () => {
         this.setState({
             isEtidable: false
         });
     }
 
-    handleClickForSave(){
+    handleClickForSave = () => {
         this.props.saveNewTaskName(this.props.index,this.state.editValue);
         this.setState({
             isEtidable: false
         });
     }
 
-    handleChangeForEdit(newValue){
+    handleChangeForEdit = (newValue) => {
         this.setState({
             editValue: newValue
         });
     }
 
+    renderForNormalMode = () => {
+        let task = null;
+        if (!this.state.isEtidable){
+           task = <div className="row">
+                <div className="col-8 list-item">
+                    {this.props.taskName}
+                </div>
+                <div className="row">
+                    <div className="col-4">
+                        <button onClick={this.handleClickForEdit} className="btn btn-outline-secondary">
+                            Edit
+                        </button>
+                    </div>
+                    <div className="col-4">
+                        <button onClick={this.handleClickForDelete} className="btn btn-outline-secondary">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+        return task;
+
+    }
+
+    renderForEditMode = () => {
+        let task = null;
+        if (this.state.isEtidable){
+            task = <div className="row">
+                <div className="col-8">
+                    <input
+                        className="form-control"
+                        defaultValue={this.props.taskName}
+                        onChange={(e) => this.handleChangeForEdit(e.target.value)}
+                    />
+                </div>
+                <div className="row">
+                    <div className="col-4">
+                        <button onClick={this.handleClickForSave} className="btn btn-outline-secondary">
+                            Save
+                        </button>
+                    </div>
+                    <div className="col-4">
+                        <button onClick={this.handleClickForCancel} className="btn btn-outline-secondary">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+        return task;
+
+    }
+
+
+
     render() {
         return (
             <div className="list-group-item list-group-item-action">
-                    { !this.state.isEtidable &&
-                        <div className="row">
-                            <div className="col-8 list-item">
-                                {this.props.taskName}
-                            </div>
-                            <div className="row">
-                                <div className="col-4">
-                                    <button onClick={this.handleClickForEdit.bind(this)} className="btn btn-outline-secondary">
-                                        Edit
-                                    </button>
-                                </div>
-                                <div className="col-4">
-                                    <button onClick={this.handleClickForDelete.bind(this)} className="btn btn-outline-secondary">
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    { this.state.isEtidable &&
-                        <div className="row">
-                            <div className="col-8">
-                                <input
-                                    className="form-control"
-                                    defaultValue={this.props.taskName}
-                                    onChange={(e) => this.handleChangeForEdit(e.target.value)}
-                                />
-                            </div>
-                            <div className="row">
-                                <div className="col-4">
-                                    <button onClick={this.handleClickForSave.bind(this)} className="btn btn-outline-secondary">
-                                        Save
-                                    </button>
-                                </div>
-                                <div className="col-4">
-                                    <button onClick={this.handleClickForCancel.bind(this)} className="btn btn-outline-secondary">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    }
+                    { this.renderForNormalMode() }
+                    { this.renderForEditMode() }
             </div>
         );
     }
 }
+
+export default Task;

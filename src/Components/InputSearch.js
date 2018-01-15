@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class InputSearch extends Component {
+class InputSearch extends Component {
 
     constructor(props) {
         super(props);
@@ -9,19 +9,13 @@ export default class InputSearch extends Component {
         };
     }
 
-    handleChange(inputValue) {
+    handleChange = (inputValue) => {
         this.setState({
             value: inputValue
         });
         this.props.search(this.state.value);
     }
 
-    // handleClick() {
-    //     this.props.search(this.state.value);
-    //     this.setState({
-    //         value: ''
-    //     });
-    // }
 
     render() {
         return (
@@ -38,3 +32,5 @@ export default class InputSearch extends Component {
         );
     }
 }
+
+export default InputSearch;

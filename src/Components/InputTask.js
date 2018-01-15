@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-// import { withAlert } from 'react-alert'
 import AlertMessage from "./AlertMessage";
 
 let message;
 
-export default class InputTask extends Component {
+class InputTask extends Component {
 
     constructor(props) {
         super(props);
@@ -14,13 +13,13 @@ export default class InputTask extends Component {
         };
     }
 
-    handleChange(inputValue) {
+    handleChange = (inputValue) => {
         this.setState({
             value: inputValue
         });
     }
 
-    handleClick() {
+    handleClick = () => {
         if (this.state.value.length < 4) {
             message = 'Task must be longer than 3 characters';
             this.setState({
@@ -40,7 +39,7 @@ export default class InputTask extends Component {
         }
     }
 
-    closeAlertMessage(){
+    closeAlertMessage = () => {
         this.setState({
             isValidate: true
         });
@@ -50,14 +49,6 @@ export default class InputTask extends Component {
     render() {
         return <div>
             <div className="input-group mb-3">
-                <div className="input-group-prepend">
-                    <button
-                        className="btn btn-outline-secondary"
-                        onClick={this.handleClick.bind(this)}
-                    >
-                        Add
-                    </button>
-                </div>
                 <input
                     className="form-control"
                     placeholder="Add new Task"
@@ -65,16 +56,24 @@ export default class InputTask extends Component {
                     value={this.state.value}
                     onChange={(e) => this.handleChange(e.target.value)}
                 />
+                <div className="input-group-append">
+                    <button
+                        className="btn btn-outline-secondary"
+                        onClick={this.handleClick}
+                    >
+                        Add
+                    </button>
+                </div>
             </div>
             {
                 !this.state.isValidate  &&
                 <AlertMessage
                     message = {message}
-                    isClosed = {this.closeAlertMessage.bind(this)}
+                    isClosed = {this.closeAlertMessage}
                 />
             }
         </div>;
     }
 }
 
-// export default withAlert(InputTask)
+export default InputTask;

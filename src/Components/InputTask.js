@@ -15,7 +15,8 @@ class InputTask extends Component {
 
     handleChange = (inputValue) => {
         this.setState({
-            value: inputValue
+            value: inputValue,
+            isValidate: true
         });
     }
 
@@ -39,11 +40,11 @@ class InputTask extends Component {
         }
     }
 
-    closeAlertMessage = () => {
-        this.setState({
-            isValidate: true
-        });
-    }
+    // closeAlertMessage = () => {
+    //     this.setState({
+    //         isValidate: true
+    //     });
+    // }
 
 
     render() {
@@ -69,7 +70,6 @@ class InputTask extends Component {
                 !this.state.isValidate  &&
                 <AlertMessage
                     message = {message}
-                    isClosed = {this.closeAlertMessage}
                 />
             }
         </div>;

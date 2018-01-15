@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import { withAlert } from 'react-alert'
-import InputValidateMessage from "./InputValidateMessage";
+import AlertMessage from "./AlertMessage";
 
-var message;
+let message;
 
 export default class InputTask extends Component {
 
@@ -21,9 +21,13 @@ export default class InputTask extends Component {
     }
 
     handleClick() {
-        if (this.state.value.length < 4){
-            // this.props.alert.error('Task must be longer than 3 characters')
+        if (this.state.value.length < 4) {
             message = 'Task must be longer than 3 characters';
+            this.setState({
+                isValidate: false
+            });
+        } else if (this.props.list.filter((task) => task.taskName === this.state.value).length > 0){
+            message = 'This task already exists';
             this.setState({
                 isValidate: false
             });
@@ -37,7 +41,6 @@ export default class InputTask extends Component {
     }
 
     closeAlertMessage(){
-        this.props.closeAlert();
         this.setState({
             isValidate: true
         });
@@ -64,7 +67,11 @@ export default class InputTask extends Component {
                 />
             </div>
             {
-                (!this.state.isValidate || this.props.isExist) && <InputValidateMessage isClosed={this.closeAlertMessage.bind(this)} message={message}/>
+                !this.state.isValidate  &&
+                <AlertMessage
+                    message = {message}
+                    isClosed = {this.closeAlertMessage.bind(this)}
+                />
             }
         </div>;
     }

@@ -21,7 +21,7 @@ export default class TaskList extends Component {
         super(props);
         this.state = {
             displayedTasks: TASKS,
-            isExist: false
+            // isExist: false
         };
     }
 
@@ -30,9 +30,9 @@ export default class TaskList extends Component {
         let task = { taskName: newTask };
         if (tasks.filter((task) => task.taskName === newTask).length > 0){
             // this.props.alert.error('This task already exists');
-            this.setState({
-                isExist: true
-            });
+            // this.setState({
+            //     isExist: true
+            // });
         } else {
             tasks.push(task);
             this.setState({
@@ -62,11 +62,11 @@ export default class TaskList extends Component {
         displayedNewTasks[index].taskName = newTaskName;
         this.setState(Object.assign({}, {displayedTasks: displayedNewTasks}));
     }
-    closeAlertMessage(){
-        this.setState({
-            isExist: false
-        });
-    }
+    // closeAlertMessage(){
+    //     this.setState({
+    //         isExist: false
+    //     });
+    // }
 
     render() {
         return (
@@ -74,10 +74,7 @@ export default class TaskList extends Component {
                 <InputSearch search = {this.search.bind(this)}/>
                 <InputTask
                     addTask = {this.addNewTask.bind(this)}
-                    isExist = {this.state.isExist}
-                    isExistMessage = 'This task already exists'
-                    closeAlert = {this.closeAlertMessage.bind(this)}
-
+                    list = {this.state.displayedTasks}
                 />
 
                 <div>

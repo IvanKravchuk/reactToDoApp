@@ -3,4 +3,10 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+list-item {
+     width: 250px;
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
 
+}

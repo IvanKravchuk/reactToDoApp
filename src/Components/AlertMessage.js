@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 
-export default class InputValidateMessage extends Component {
+export default class AlertMessage extends Component {
 
     clickHandler(){
         this.props.isClosed();

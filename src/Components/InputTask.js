@@ -40,13 +40,6 @@ class InputTask extends Component {
         }
     }
 
-    // closeAlertMessage = () => {
-    //     this.setState({
-    //         isValidate: true
-    //     });
-    // }
-
-
     render() {
         return <div>
             <div className="input-group mb-3">

@@ -34,7 +34,7 @@ class Task extends Component {
     }
 
     handleClickForSave = () => {
-        this.props.saveNewTaskName(this.props.index,this.state.editValue);
+        this.props.saveNewTaskName(this.props.index,this.state.editValue,this.props.taskName);
         this.setState({
             isEtidable: false
         });

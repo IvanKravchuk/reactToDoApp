@@ -27,7 +27,6 @@ class InputSearch extends Component {
                     value={this.state.value}
                     onChange={(e)=>this.handleChange(e.target.value)}
                 />
-
             </div>
         );
     }

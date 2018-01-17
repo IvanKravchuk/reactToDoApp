@@ -61,7 +61,7 @@ class InputTask extends Component {
                     className="form-control"
                     placeholder="Assign to"
                     type="text"
-                    value={this.state.value}
+                    value={this.state.assignToValue}
                     onChange={(e) => this.handleChangeForAssign(e.target.value)}
                 />
                 <input

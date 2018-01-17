@@ -1,34 +1,47 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 import TaskList from './Components/TaskList';
 import InputTask from './Components/InputTask';
 import InputSearch from "./Components/InputSearch";
 
-let TASKS = [
-    {
-        id: 1,
-        isDone: false,
-        taskName: 'task 1',
-        assignTo: 'Mike'
-    }, {
-        id: 2,
-        isDone: false,
-        taskName: 'task 2',
-        assignTo: 'Carl'
-    }, {
-        id: 3,
-        isDone: false,
-        taskName: 'task 3',
-        assignTo: 'Jack'
-    }
-];
-
+let TASKS = null;
 
 class App extends Component {
 
+    componentWillMount() {
+        this.getTasks();
+    }
+
     state = {
-        displayedTasks: TASKS,
+        displayedTasks: [],
         showCompletedTasks: false
+    }
+
+    getTasks = () => {
+        axios.get('http://localhost:3000/tasks')
+            .then( (response) => {
+
+                TASKS = response.data;
+                console.log(TASKS);
+                this.setState({
+                    displayedTasks: TASKS
+                });
+            })
+            .catch( (error) => {
+                console.log(error);
+            });
+    }
+
+    createNewTask(newTask, getId){
+        axios.post('http://localhost:3000/tasks',  newTask )
+            .then( (response) => {
+                console.log(response);
+                getId(response.data.id)
+            })
+            .catch( (error) => {
+                console.log(error);
+            });
     }
 
     search = (searchString) => {
@@ -45,17 +58,18 @@ class App extends Component {
     addNewTask = (newTaskName,authorName) => {
         let tasks = this.state.displayedTasks;
         let task = {
-            id: tasks[tasks.length - 1].id + 1,
             isDone: false,
             taskName: newTaskName,
             assignTo: authorName
         };
         if (!tasks.filter((task) => task.taskName === newTaskName).length > 0){
-            tasks.push(task);
-            this.setState({
-                displayedTasks: tasks
+            this.createNewTask(task,(id) => {
+                task.id = id;
+                tasks.push(task);
+                this.setState({
+                    displayedTasks: tasks
+                });
             });
-            console.log("addNew",this.state.displayedTasks);
         }
     }
 

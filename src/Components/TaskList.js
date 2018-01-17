@@ -7,8 +7,8 @@ import Task from './Task';
 class TaskList extends Component {
 
 
-    deleteTask = (taskName) => {
-        this.props.deleteTask(taskName);
+    taskIsDone = (taskId) => {
+        this.props.taskIsDone(taskId);
     }
 
     saveNewTaskName = (index, newTaskName, prevTaskName) => {
@@ -24,9 +24,12 @@ class TaskList extends Component {
                             this.props.list.map((el, index) => {
                                 return <Task
                                     key={el.id}
+                                    id={el.id}
                                     index={index}
+                                    assignTo={el.assignTo}
                                     taskName={el.taskName}
-                                    deleteTask={this.deleteTask}
+                                    isEditable={this.props.isEditable}
+                                    taskIsDone={this.taskIsDone}
                                     saveNewTaskName={this.saveNewTaskName}
                                 />;
                             })

@@ -7,16 +7,19 @@ import InputSearch from "./Components/InputSearch";
 let TASKS = [
     {
         id: 1,
-        status: false,
-        taskName: 'task 1'
+        isDone: false,
+        taskName: 'task 1',
+        assignTo: 'Mike'
     }, {
         id: 2,
-        status: false,
-        taskName: 'task 2'
+        isDone: false,
+        taskName: 'task 2',
+        assignTo: 'Carl'
     }, {
         id: 3,
-        status: false,
-        taskName: 'task 3'
+        isDone: false,
+        taskName: 'task 3',
+        assignTo: 'Jack'
     }
 ];
 
@@ -24,7 +27,8 @@ let TASKS = [
 class App extends Component {
 
     state = {
-        displayedTasks: TASKS
+        displayedTasks: TASKS,
+        showCompletedTasks: false
     }
 
     search = (searchString) => {
@@ -38,14 +42,15 @@ class App extends Component {
         });
     }
 
-    addNewTask = (newTask) => {
+    addNewTask = (newTaskName,authorName) => {
         let tasks = this.state.displayedTasks;
         let task = {
             id: tasks[tasks.length - 1].id + 1,
-            status: false,
-            taskName: newTask
+            isDone: false,
+            taskName: newTaskName,
+            assignTo: authorName
         };
-        if (!tasks.filter((task) => task.taskName === newTask).length > 0){
+        if (!tasks.filter((task) => task.taskName === newTaskName).length > 0){
             tasks.push(task);
             this.setState({
                 displayedTasks: tasks
@@ -54,16 +59,34 @@ class App extends Component {
         }
     }
 
-    deleteTask = (taskName) => {
+    taskIsDone = (taskId) => {
+        let tasks = this.state.displayedTasks;
+        let task = tasks.filter((task) => task.id === taskId);
+        let index = tasks.indexOf(task[0]);
+        tasks[index].isDone = true;
         this.setState({
-            displayedTasks: this.state.displayedTasks.filter((task) => task.taskName !== taskName)
+            displayedTasks: tasks
         });
     }
 
     saveNewTaskName = (index, newTaskName, prevTaskName) => {
-        let displayedNewTasks = this.state.displayedTasks;
-        displayedNewTasks[index].taskName = newTaskName ? newTaskName : prevTaskName;
-        this.setState(Object.assign({}, {displayedTasks: displayedNewTasks}));
+        let tasks = this.state.displayedTasks;
+        tasks[index].taskName = newTaskName ? newTaskName : prevTaskName;
+        this.setState(Object.assign({}, {displayedTasks: tasks}));
+    }
+
+    showCompletedTasks = () => {
+        this.setState({
+            showCompletedTasks: !this.state.showCompletedTasks
+        });
+    }
+
+    getDoneList = () => {
+        return this.state.displayedTasks.filter((task) => task.isDone === true);
+    }
+
+    getUndoneList = () => {
+        return this.state.displayedTasks.filter((task) => task.isDone === false);
     }
 
     render() {
@@ -73,14 +96,30 @@ class App extends Component {
                     search = {this.search}
                 />
                 <InputTask
-                    addTask = {this.addNewTask}
+                    addNewTask = {this.addNewTask}
                     list = {this.state.displayedTasks}
                 />
                 <TaskList
-                    list={this.state.displayedTasks}
-                    deleteTask={this.deleteTask}
+                    list={this.getUndoneList()}
+                    taskIsDone={this.taskIsDone}
                     saveNewTaskName={this.saveNewTaskName}
+                    isEditable={true}
                 />
+                <div>
+                    <button
+                        type="button"
+                        className="btn btn-outline-secondary btn-lg btn-block"
+                        onClick={this.showCompletedTasks}
+                    >
+                        Show completed tasks
+                    </button>
+                    { this.state.showCompletedTasks &&
+                        <TaskList
+                            list={this.getDoneList()}
+                            isEditable={false}
+                        />
+                    }
+                </div>
             </div>
         );
       }

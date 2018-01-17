@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './components.css';
 
 // let inputStyle = {
 //     width: "250 px",
@@ -12,31 +13,31 @@ class Task extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isEtidable: false,
+            isEditable: false,
             editValue: ''
         };
     }
 
-    handleClickForDelete = () => {
-        this.props.deleteTask(this.props.taskName);
+    handleClickForDone = () => {
+        this.props.taskIsDone(this.props.id);
     }
 
     handleClickForEdit = () => {
         this.setState({
-            isEtidable: true
+            isEditable: true
         });
     }
 
     handleClickForCancel = () => {
         this.setState({
-            isEtidable: false
+            isEditable: false
         });
     }
 
     handleClickForSave = () => {
         this.props.saveNewTaskName(this.props.index,this.state.editValue,this.props.taskName);
         this.setState({
-            isEtidable: false
+            isEditable: false
         });
     }
 
@@ -48,23 +49,35 @@ class Task extends Component {
 
     renderForNormalMode = () => {
         let task = null;
-        if (!this.state.isEtidable){
-           task = <div className="row">
-                <div className="col-8 list-item">
+        let underline = 'row';
+        if (!this.props.isEditable){
+            underline = 'row task-done';
+        }
+
+        if (!this.state.isEditable){
+           task = <div className={underline}>
+               <div className="col-4 list-item">
+                   {this.props.assignTo}
+               </div>
+                <div className="col-4 list-item">
                     {this.props.taskName}
                 </div>
-                <div className="row">
-                    <div className="col-4">
-                        <button onClick={this.handleClickForEdit} className="btn btn-outline-secondary">
-                            Edit
-                        </button>
-                    </div>
-                    <div className="col-4">
-                        <button onClick={this.handleClickForDelete} className="btn btn-outline-secondary">
-                            Delete
-                        </button>
-                    </div>
-                </div>
+               {
+                   this.props.isEditable &&
+                   <div className="row">
+                       <div className="col-4">
+                           <button onClick={this.handleClickForEdit} className="btn btn-outline-secondary">
+                               Edit
+                           </button>
+                       </div>
+                       <div className="col-4">
+                           <button onClick={this.handleClickForDone} className="btn btn-outline-secondary">
+                               Done
+                           </button>
+                       </div>
+                   </div>
+               }
+
             </div>
         }
         return task;
@@ -73,9 +86,12 @@ class Task extends Component {
 
     renderForEditMode = () => {
         let task = null;
-        if (this.state.isEtidable){
+        if (this.state.isEditable){
             task = <div className="row">
-                <div className="col-8">
+                <div className="col-4 list-item">
+                    {this.props.assignTo}
+                </div>
+                <div className="col-4">
                     <input
                         className="form-control"
                         defaultValue={this.props.taskName}

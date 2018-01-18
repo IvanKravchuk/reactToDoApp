@@ -6,6 +6,7 @@ import InputTask from './Components/InputTask';
 import InputSearch from "./Components/InputSearch";
 
 let TASKS = null;
+let url = 'http://localhost:3000/tasks';
 
 class App extends Component {
 
@@ -19,7 +20,7 @@ class App extends Component {
     }
 
     getTasks = () => {
-        axios.get('http://localhost:3000/tasks')
+        axios.get(url)
             .then( (response) => {
 
                 TASKS = response.data;
@@ -33,8 +34,8 @@ class App extends Component {
             });
     }
 
-    createNewTask(newTask, getId){
-        axios.post('http://localhost:3000/tasks',  newTask )
+    createNewTask = (newTask, getId) => {
+        axios.post(url,  newTask )
             .then( (response) => {
                 console.log(response);
                 getId(response.data.id)
@@ -43,6 +44,26 @@ class App extends Component {
                 console.log(error);
             });
     }
+
+    updateTask = (data, id) => {
+        axios.put(url + '/' + id,  data )
+            .then( (response) => {
+                console.log(response);
+            })
+            .catch( (error) => {
+                console.log(error);
+            });
+    }
+
+    // deleteTask = (id) => {
+    //     axios.delete(url + '/' + id )
+    //         .then( (response) => {
+    //             console.log(response);
+    //         })
+    //         .catch( (error) => {
+    //             console.log(error);
+    //         });
+    // }
 
     search = (searchString) => {
         let searchQuery = searchString.toLowerCase();
@@ -75,9 +96,14 @@ class App extends Component {
 
     taskIsDone = (taskId) => {
         let tasks = this.state.displayedTasks;
-        let task = tasks.filter((task) => task.id === taskId);
-        let index = tasks.indexOf(task[0]);
+        let index = tasks.map(item => item.id).indexOf(taskId);
         tasks[index].isDone = true;
+        let data = {
+            isDone: true,
+            taskName: tasks[index].taskName,
+            assignTo: tasks[index].assignTo
+        };
+        this.updateTask(data, tasks[index].id);
         this.setState({
             displayedTasks: tasks
         });

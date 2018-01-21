@@ -1,106 +1,61 @@
 import React, { Component } from 'react';
 import './App.css';
-import axios from 'axios';
 import TaskList from './Components/TaskList';
 import InputTask from './Components/InputTask';
 import InputSearch from "./Components/InputSearch";
-
-let TASKS = null;
+import { connect } from 'react-redux';
+import { getTasks, addTask, updateTask } from './Actions/tasks';
 
 class App extends Component {
 
     componentWillMount() {
-        this.getTasks();
-    }
-
-    state = {
-        displayedTasks: [],
-        showCompletedTasks: false
-    }
-
-    getTasks = () => {
-        axios.get('http://localhost:3000/tasks')
-            .then( (response) => {
-
-                TASKS = response.data;
-                console.log(TASKS);
-                this.setState({
-                    displayedTasks: TASKS
-                });
-            })
-            .catch( (error) => {
-                console.log(error);
-            });
-    }
-
-    createNewTask(newTask, getId){
-        axios.post('http://localhost:3000/tasks',  newTask )
-            .then( (response) => {
-                console.log(response);
-                getId(response.data.id)
-            })
-            .catch( (error) => {
-                console.log(error);
-            });
+        this.props.onGetTasks();
     }
 
     search = (searchString) => {
         let searchQuery = searchString.toLowerCase();
-        let displayedTasks = TASKS.filter((el) => {
+        let tasks = this.props.tasks.filter((el) => {
             let searchValue = el.taskName.toLowerCase();
             return searchValue.indexOf(searchQuery) !== -1;
         });
-        this.setState({
-            displayedTasks: displayedTasks
-        });
+        this.props.onSearchTasks(tasks);
     }
 
     addNewTask = (newTaskName,authorName) => {
-        let tasks = this.state.displayedTasks;
         let task = {
-            isDone: false,
-            taskName: newTaskName,
-            assignTo: authorName
-        };
-        if (!tasks.filter((task) => task.taskName === newTaskName).length > 0){
-            this.createNewTask(task,(id) => {
-                task.id = id;
-                tasks.push(task);
-                this.setState({
-                    displayedTasks: tasks
-                });
-            });
-        }
+                isDone: false,
+                taskName: newTaskName,
+                assignTo: authorName
+            };
+        this.props.onAddTask(task);
+
     }
 
     taskIsDone = (taskId) => {
-        let tasks = this.state.displayedTasks;
-        let task = tasks.filter((task) => task.id === taskId);
-        let index = tasks.indexOf(task[0]);
-        tasks[index].isDone = true;
-        this.setState({
-            displayedTasks: tasks
-        });
+        let tasks = this.props.tasks;
+        let index = tasks.map(item => item.id).indexOf(taskId);
+        let task = Object.assign({}, tasks[index], { isDone: true, id: null });
+        this.props.onUpdateTask(taskId, task);
     }
 
-    saveNewTaskName = (index, newTaskName, prevTaskName) => {
-        let tasks = this.state.displayedTasks;
-        tasks[index].taskName = newTaskName ? newTaskName : prevTaskName;
-        this.setState(Object.assign({}, {displayedTasks: tasks}));
+    saveNewTaskName = (data, newTaskName) => {
+        if (newTaskName){
+            let task = Object.assign({}, { isDone: data.isDone,
+                assignTo: data.assignTo, taskName: newTaskName, id: null });
+            this.props.onUpdateTask(data.id, task);
+        }
     }
 
     showCompletedTasks = () => {
-        this.setState({
-            showCompletedTasks: !this.state.showCompletedTasks
-        });
+        this.props.onShowCompletedTasks(this.props.showCompletedTasks);
     }
 
     getDoneList = () => {
-        return this.state.displayedTasks.filter((task) => task.isDone === true);
+        return this.props.tasks.filter((task) => task.isDone === true);
     }
 
     getUndoneList = () => {
-        return this.state.displayedTasks.filter((task) => task.isDone === false);
+        return this.props.tasks.filter((task) => task.isDone === false);
     }
 
     render() {
@@ -111,7 +66,7 @@ class App extends Component {
                 />
                 <InputTask
                     addNewTask = {this.addNewTask}
-                    list = {this.state.displayedTasks}
+                    list = {this.props.tasks}
                 />
                 <TaskList
                     list={this.getUndoneList()}
@@ -127,7 +82,7 @@ class App extends Component {
                     >
                         Show completed tasks
                     </button>
-                    { this.state.showCompletedTasks &&
+                    { this.props.showCompletedTasks &&
                         <TaskList
                             list={this.getDoneList()}
                             isEditable={false}
@@ -139,4 +94,26 @@ class App extends Component {
       }
 }
 
-export default App;
+export default connect(
+    state => ({
+        tasks: state.tasks.taskList,
+        showCompletedTasks: state.tasks.showCompletedTasks
+    }),
+    dispatch => ({
+        onAddTask: (newTask) => {
+            dispatch(addTask(newTask));
+        },
+        onGetTasks: () => {
+            dispatch(getTasks());
+        },
+        onShowCompletedTasks: (isShow) => {
+            dispatch({ type: 'SHOW_COMPLETED_TASKS', payload: !isShow })
+        },
+        onSearchTasks: (tasks) => {
+            dispatch({ type: 'SEARCH_TASKS', payload: tasks })
+        },
+        onUpdateTask: (taskId, data) => {
+            dispatch(updateTask(taskId, data));
+        }
+    })
+)(App);

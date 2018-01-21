@@ -11,8 +11,8 @@ class TaskList extends Component {
         this.props.taskIsDone(taskId);
     }
 
-    saveNewTaskName = (index, newTaskName, prevTaskName) => {
-        this.props.saveNewTaskName(index, newTaskName, prevTaskName);
+    saveNewTaskName = (dataData, newTaskName) => {
+        this.props.saveNewTaskName(dataData, newTaskName);
     }
 
     render() {
@@ -27,6 +27,7 @@ class TaskList extends Component {
                                     id={el.id}
                                     index={index}
                                     assignTo={el.assignTo}
+                                    isDone={el.isDone}
                                     taskName={el.taskName}
                                     isEditable={this.props.isEditable}
                                     taskIsDone={this.taskIsDone}

@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import './components.css';
 
-// let inputStyle = {
-//     width: "250 px",
-//     whiteSpace: "nowrap",
-//     overflow: "hidden",
-//     textOverflow: "ellipsis"
-// };
 
 class Task extends Component {
 

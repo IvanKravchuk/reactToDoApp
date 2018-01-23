@@ -1,6 +1,7 @@
 const initialState = {
     taskList: [],
-    showCompletedTasks: false
+    showCompletedTasks: false,
+    searchStringValue: ''
 };
 
 export default function tasks(state = initialState, action) {
@@ -31,8 +32,9 @@ export default function tasks(state = initialState, action) {
         };
     } else if (action.type === 'SEARCH_TASKS'){
         return {
-            taskList: action.payload,
-            showCompletedTasks: state.showCompletedTasks
+            taskList: state.taskList,
+            showCompletedTasks: state.showCompletedTasks,
+            searchStringValue: action.payload
         };
     }
     return state;

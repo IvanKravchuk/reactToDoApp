@@ -6,19 +6,19 @@ import InputSearch from "./Components/InputSearch";
 import { connect } from 'react-redux';
 import { getTasks, addTask, updateTask } from './Actions/tasks';
 
+
 class App extends Component {
+
+
 
     componentWillMount() {
         this.props.onGetTasks();
     }
 
-    search = (searchString) => {
-        let searchQuery = searchString.toLowerCase();
-        let tasks = this.props.tasks.filter((el) => {
-            let searchValue = el.taskName.toLowerCase();
-            return searchValue.indexOf(searchQuery) !== -1;
-        });
-        this.props.onSearchTasks(tasks);
+    search = (searchStringValue) => {
+        if (searchStringValue){
+            this.props.onSearchTasks(searchStringValue);
+        }
     }
 
     addNewTask = (newTaskName,authorName) => {
@@ -28,7 +28,6 @@ class App extends Component {
                 assignTo: authorName
             };
         this.props.onAddTask(task);
-
     }
 
     taskIsDone = (taskId) => {
@@ -48,6 +47,17 @@ class App extends Component {
 
     showCompletedTasks = () => {
         this.props.onShowCompletedTasks(this.props.showCompletedTasks);
+    }
+
+    completedTask(){
+        let completedTaskList = null;
+        if (this.props.showCompletedTasks){
+            completedTaskList = <TaskList
+                list={this.getDoneList()}
+                isEditable={false}
+            />;
+        }
+        return completedTaskList;
     }
 
     getDoneList = () => {
@@ -73,6 +83,7 @@ class App extends Component {
                     taskIsDone={this.taskIsDone}
                     saveNewTaskName={this.saveNewTaskName}
                     isEditable={true}
+                    searchString={this.props.searchStringValue}
                 />
                 <div>
                     <button
@@ -82,12 +93,7 @@ class App extends Component {
                     >
                         Show completed tasks
                     </button>
-                    { this.props.showCompletedTasks &&
-                        <TaskList
-                            list={this.getDoneList()}
-                            isEditable={false}
-                        />
-                    }
+                    { this.completedTask() }
                 </div>
             </div>
         );
@@ -97,7 +103,8 @@ class App extends Component {
 export default connect(
     state => ({
         tasks: state.tasks.taskList,
-        showCompletedTasks: state.tasks.showCompletedTasks
+        showCompletedTasks: state.tasks.showCompletedTasks,
+        searchStringValue: state.tasks.searchStringValue,
     }),
     dispatch => ({
         onAddTask: (newTask) => {
@@ -109,8 +116,8 @@ export default connect(
         onShowCompletedTasks: (isShow) => {
             dispatch({ type: 'SHOW_COMPLETED_TASKS', payload: !isShow })
         },
-        onSearchTasks: (tasks) => {
-            dispatch({ type: 'SEARCH_TASKS', payload: tasks })
+        onSearchTasks: (searchStringValue) => {
+            dispatch({ type: 'SEARCH_TASKS', payload: searchStringValue })
         },
         onUpdateTask: (taskId, data) => {
             dispatch(updateTask(taskId, data));

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import AlertMessage from "./AlertMessage";
 
-let message;
 
 class InputTask extends Component {
 
@@ -10,14 +9,13 @@ class InputTask extends Component {
         this.state = {
             taskNameValue: '',
             assignToValue: '',
-            isValidate: true
+            message: ''
         };
     }
 
     handleChangeForTaskName = (inputValue) => {
         this.setState({
             taskNameValue: inputValue,
-            isValidate: true
         });
     }
 
@@ -30,28 +28,34 @@ class InputTask extends Component {
 
     handleClick = () => {
         if (this.state.taskNameValue.length < 4) {
-            message = 'Task must be longer than 3 characters';
             this.setState({
-                isValidate: false
+                message: 'Task must be longer than 3 characters'
             });
         } else if (this.props.list.filter((task) => task.taskName === this.state.taskNameValue).length > 0) {
-            message = 'This task already exists';
             this.setState({
-                isValidate: false
+                message: 'This task already exists'
             });
         } else if (this.state.assignToValue.length < 1){
-            message = 'Has no name';
             this.setState({
-                isValidate: false
+                message: 'Has no name'
             });
         } else {
             this.props.addNewTask(this.state.taskNameValue,this.state.assignToValue);
             this.setState({
                 taskNameValue: '',
                 assignToValue: '',
-                isValidate: true
             });
         }
+    }
+
+    showAlertMessage(){
+        let message = null;
+        if (this.state.message){
+            message = <AlertMessage
+                message = {this.state.message}
+            />
+        }
+        return message;
     }
 
     render() {
@@ -80,12 +84,7 @@ class InputTask extends Component {
                     </button>
                 </div>
             </div>
-            {
-                !this.state.isValidate  &&
-                <AlertMessage
-                    message = {message}
-                />
-            }
+            { this.showAlertMessage() }
         </div>;
     }
 }
